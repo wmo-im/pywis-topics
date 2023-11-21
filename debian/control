@@ -1,0 +1,20 @@
+Source: pywis-topics
+Section: python
+Priority: optional
+Maintainer: Tom Kralidis <tomkralidis@gmail.com>
+Build-Depends: debhelper (>= 9),
+               dh-python,
+               python3-all,
+               python3-setuptools
+Standards-Version: 4.3.0
+Vcs-Git: https://github.com/wmo-im/pywis-topics.git
+Homepage: https://github.com/wmo-im/pywis-topics
+
+Package: pywis-topics
+Architecture: all
+Depends: ${python3:Depends},
+         python3-click,
+         ${misc:Depends}
+Suggests: python3-boto3
+Description: Python package for WMO WIS2 Topic Hierarchy.
+ pywis-topics is utility to work with the WIS2 Topic Hierarchy

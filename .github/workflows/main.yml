@@ -1,0 +1,21 @@
+name: main
+
+on:
+  [ push, pull_request ]
+    
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        name: setup Python
+        with:
+          python-version: 3.8
+      - name: Install pywis-topics
+        run: |
+          python3 setup.py install
+          pywis-topics --version
+          pywis-topics bundle sync
+      - name: run tests
+        run: python3 setup.py test
