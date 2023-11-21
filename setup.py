@@ -62,7 +62,7 @@ def get_package_version():
 
 LONG_DESCRIPTION = read('README.md')
 
-DESCRIPTION = 'pywis-topics is utility to work with the WIS2 Topic Hierarchy'
+DESCRIPTION = 'pywis-topics is a utility to work with the WIS2 Topic Hierarchy'
 
 MANIFEST = Path('MANIFEST')
 

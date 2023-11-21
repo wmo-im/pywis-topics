@@ -5,7 +5,7 @@
 
 ## Overview
 
-pywis-topics is utility to work with the WIS2 Topic Hierarchy
+pywis-topics is a utility to work with the WIS2 Topic Hierarchy
 
 ## Installation
 
@@ -50,7 +50,7 @@ pywis-topics --version
 
 ```bash
 # validate a WIS2 topic hierarchy
-pywis-topics validate origin/a/wis2/can
+pywis-topics validate origin/a/wis2/ca-eccc-msc
 
 # list children of a given WIS2 topic hierarchy level
 pywis-topics list wis2/a
@@ -65,6 +65,9 @@ Python examples:
 from pywis_topics.topics import TopicHierarchy
 
 th = TopicHierarchy()
+
+th.validate('origin/a/wis2/ca-eccc-msc/data/core')
+th.list_children('origin/a/wis2')
 ```
 
 ## Development
