@@ -46,7 +46,7 @@ First check pywis-topics was correctly installed
 pywis-topics --version
 ```
 
-### Listing and valiation
+### Listing and validation
 
 ```bash
 # validate a WIS2 topic hierarchy
