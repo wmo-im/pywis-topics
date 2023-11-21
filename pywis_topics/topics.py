@@ -35,7 +35,7 @@ WIS2_TOPIC_HIERARCHY_LOOKUP = Path(get_userdir()) / 'wis2-topic-hierarchy'
 
 
 class TopicHierarchy:
-    def __init__(self):
+    def __init__(self, tables=None):
 
         self.topics = []
 
@@ -49,8 +49,13 @@ class TopicHierarchy:
             'earth-system-discipline'
         ]
 
+        if tables is not None:
+            tables_dir = Path(tables) / 'wis2-topic-hierarchy'
+        else:
+            tables_dir = WIS2_TOPIC_HIERARCHY_LOOKUP
+
         for topic_level in topic_levels:
-            filename = WIS2_TOPIC_HIERARCHY_LOOKUP / f'{topic_level}.csv'
+            filename = tables_dir / f'{topic_level}.csv'
             with filename.open() as fh:
                 level_topics = []
                 reader = csv.reader(fh)
