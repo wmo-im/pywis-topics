@@ -50,6 +50,9 @@ class WIS2TopicHierarchyTest(unittest.TestCase):
         value = 'a/wis2'
         self.assertFalse(self.th.validate(value))
 
+        value = 'cache/a/wis2/fake-centre-id/data/core'
+        self.assertTrue(self.th.validate(value, strict=False))
+
     def test_list_children(self):
         value = None
         with self.assertRaises(AttributeError):
