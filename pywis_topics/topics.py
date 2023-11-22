@@ -116,11 +116,14 @@ class TopicHierarchy:
 
         return matches
 
-    def validate(self, topic_hierarchy: str = None) -> bool:
+    def validate(self, topic_hierarchy: str = None,
+                 strict: bool = True) -> bool:
         """
         Validates a topic hierarchy
 
         :param topic_hierarchy: `str` of topic hierarchy
+        :param strict: `bool` of whether to perform strict validation,
+                       including centre-id
 
         :returns: `bool` of whether topic hierarchy is valid
         """
@@ -135,6 +138,9 @@ class TopicHierarchy:
         th_tokens = topic_hierarchy.split('/', 6)
 
         for count, value in enumerate(th_tokens):
+            if not strict and count == 3:
+                LOGGER.debug('Skipping centre-id validation')
+                continue
             if value not in self.topics[count]:
                 return False
 
@@ -170,15 +176,17 @@ def list_(ctx, topic_hierarchy, logfile, verbosity):
 @click.command()
 @click.pass_context
 @get_cli_common_options
+@click.option('--strict/--no-strict', default=True,
+              help='Validate in strict mode')
 @click.argument('topic-hierarchy')
-def validate(ctx, topic_hierarchy, logfile, verbosity):
+def validate(ctx, topic_hierarchy, logfile, verbosity, strict=True):
     """Validate topic hierarchy"""
 
     setup_logger(verbosity, logfile)
 
     th = TopicHierarchy()
 
-    if th.validate(topic_hierarchy):
+    if th.validate(topic_hierarchy, strict=strict):
         click.echo('Valid')
     else:
         click.echo('Invalid')

@@ -52,6 +52,9 @@ pywis-topics --version
 # validate a WIS2 topic hierarchy
 pywis-topics validate origin/a/wis2/ca-eccc-msc
 
+# validate a WIS2 topic hierarchy in no-strict mode
+pywis-topics validate --no-strict origin/a/wis2/fake-centre-id/data/core
+
 # list children of a given WIS2 topic hierarchy level
 pywis-topics list wis2/a
 ```
@@ -68,6 +71,8 @@ th = TopicHierarchy()
 
 th.validate('origin/a/wis2/ca-eccc-msc/data/core')
 th.list_children('origin/a/wis2')
+
+th.validate('origin/a/wis2/fake-centre-id/data/core', strict=False)
 ```
 
 ## Development
