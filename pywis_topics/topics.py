@@ -35,7 +35,14 @@ WIS2_TOPIC_HIERARCHY_LOOKUP = Path(get_userdir()) / 'wis2-topic-hierarchy'
 
 
 class TopicHierarchy:
-    def __init__(self, tables=None):
+    def __init__(self, tables: str = None):
+        """
+        Initializer
+
+        :param tables: location of base directory for bundle
+
+        :returns: `pywis_topics.topics_TopicHierarchy`
+        """
 
         self.topics = []
 
@@ -130,10 +137,12 @@ class TopicHierarchy:
 
         LOGGER.debug(f'Validating topic hierarchy {topic_hierarchy}')
 
-        if topic_hierarchy == '/':
+        if topic_hierarchy in ['/', None]:
             msg = 'Topic hierarchy is empty'
-            LOGGER.info(msg)
+            LOGGER.warning(msg)
             raise ValueError(msg)
+
+        validate_baseline(topic_hierarchy)
 
         th_tokens = topic_hierarchy.split('/', 6)
 
@@ -147,8 +156,36 @@ class TopicHierarchy:
         return True
 
 
+def validate_baseline(topic_hierarchy: str = None) -> bool:
+    """
+    Validates a topic hierarchy baseline conventions
+
+    :param topic_hierarchy: `str` of topic hierarchy
+
+    :returns: `bool` of whether topic hierarchy is valid to the baseline
+              conventions
+    """
+
+    if '.' in topic_hierarchy:
+        msg = 'Topic cannot contain dots'
+        LOGGER.warning(msg)
+        return False
+
+    if not topic_hierarchy.islower():
+        msg = 'Topic must be lowercase'
+        LOGGER.warning(msg)
+        return False
+
+    if not topic_hierarchy.isascii():
+        msg = 'Topic must be ASCII T50'
+        LOGGER.warning(msg)
+        return False
+
+    return True
+
+
 @click.group()
-def topics():
+def topic():
     """Topic hierarchy utilities"""
     pass
 
@@ -192,5 +229,5 @@ def validate(ctx, topic_hierarchy, logfile, verbosity, strict=True):
         click.echo('Invalid')
 
 
-topics.add_command(list_)
-topics.add_command(validate)
+topic.add_command(list_)
+topic.add_command(validate)
