@@ -50,10 +50,20 @@ pywis-topics --version
 
 ```bash
 # validate a WIS2 topic hierarchy
-pywis-topics validate origin/a/wis2/ca-eccc-msc
+pywis-topics topic validate origin/a/wis2/ca-eccc-msc
+
+# validate a WIS2 topic hierarchy in no-strict mode
+pywis-topics topic validate --no-strict origin/a/wis2/fake-centre-id/data/core
 
 # list children of a given WIS2 topic hierarchy level
-pywis-topics list wis2/a
+pywis-topics topic list wis2/a
+```
+
+### Centre identification validation
+
+```bash
+# validate a centre-id
+pywis-topics centre-id 123
 ```
 
 ### Using the API
@@ -61,13 +71,18 @@ pywis-topics list wis2/a
 Python examples:
 
 ```python
-# subscriber example
+from pywis_topics.centre_id import CentreId
 from pywis_topics.topics import TopicHierarchy
 
 th = TopicHierarchy()
 
 th.validate('origin/a/wis2/ca-eccc-msc/data/core')
 th.list_children('origin/a/wis2')
+
+th.validate('origin/a/wis2/fake-centre-id/data/core', strict=False)
+
+cid = CentreId('ca-centre123')
+cid.validate()
 ```
 
 ## Development

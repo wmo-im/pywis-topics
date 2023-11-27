@@ -71,5 +71,11 @@ def sync(ctx, logfile, verbosity):
             with z.open(name) as src, dest_file.open('wb') as dest:
                 shutil.copyfileobj(src, dest)
 
+    LOGGER.debug('Downloading IANA TLDs')
+    IANA_URL = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt'
+    iana_file = WIS2_TOPIC_HIERARCHY_DIR / 'tlds-alpha-by-domain.txt'
+    with iana_file.open('wb') as fh:
+        fh.write(urlopen_(f'{IANA_URL}').read())
+
 
 bundle.add_command(sync)

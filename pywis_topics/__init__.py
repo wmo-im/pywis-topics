@@ -24,7 +24,8 @@ __version__ = '0.2.0'
 import click
 
 from pywis_topics.bundle import bundle
-from pywis_topics.topics import list_, validate
+from pywis_topics.centre_id import centre_id
+from pywis_topics.topics import topic
 
 
 @click.group()
@@ -36,5 +37,5 @@ def cli():
 
 
 cli.add_command(bundle)
-cli.add_command(list_)
-cli.add_command(validate)
+cli.add_command(centre_id)
+cli.add_command(topic)

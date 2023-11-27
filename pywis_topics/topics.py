@@ -35,7 +35,14 @@ WIS2_TOPIC_HIERARCHY_LOOKUP = Path(get_userdir()) / 'wis2-topic-hierarchy'
 
 
 class TopicHierarchy:
-    def __init__(self, tables=None):
+    def __init__(self, tables: str = None):
+        """
+        Initializer
+
+        :param tables: location of base directory for bundle
+
+        :returns: `pywis_topics.topics_TopicHierarchy`
+        """
 
         self.topics = []
 
@@ -116,33 +123,69 @@ class TopicHierarchy:
 
         return matches
 
-    def validate(self, topic_hierarchy: str = None) -> bool:
+    def validate(self, topic_hierarchy: str = None,
+                 strict: bool = True) -> bool:
         """
         Validates a topic hierarchy
 
         :param topic_hierarchy: `str` of topic hierarchy
+        :param strict: `bool` of whether to perform strict validation,
+                       including centre-id
 
         :returns: `bool` of whether topic hierarchy is valid
         """
 
         LOGGER.debug(f'Validating topic hierarchy {topic_hierarchy}')
 
-        if topic_hierarchy == '/':
+        if topic_hierarchy in ['/', None]:
             msg = 'Topic hierarchy is empty'
-            LOGGER.info(msg)
+            LOGGER.warning(msg)
             raise ValueError(msg)
+
+        validate_baseline(topic_hierarchy)
 
         th_tokens = topic_hierarchy.split('/', 6)
 
         for count, value in enumerate(th_tokens):
+            if not strict and count == 3:
+                LOGGER.debug('Skipping centre-id validation')
+                continue
             if value not in self.topics[count]:
                 return False
 
         return True
 
 
+def validate_baseline(topic_hierarchy: str = None) -> bool:
+    """
+    Validates a topic hierarchy baseline conventions
+
+    :param topic_hierarchy: `str` of topic hierarchy
+
+    :returns: `bool` of whether topic hierarchy is valid to the baseline
+              conventions
+    """
+
+    if '.' in topic_hierarchy:
+        msg = 'Topic cannot contain dots'
+        LOGGER.warning(msg)
+        return False
+
+    if not topic_hierarchy.islower():
+        msg = 'Topic must be lowercase'
+        LOGGER.warning(msg)
+        return False
+
+    if not topic_hierarchy.isascii():
+        msg = 'Topic must be ASCII T50'
+        LOGGER.warning(msg)
+        return False
+
+    return True
+
+
 @click.group()
-def topics():
+def topic():
     """Topic hierarchy utilities"""
     pass
 
@@ -170,19 +213,21 @@ def list_(ctx, topic_hierarchy, logfile, verbosity):
 @click.command()
 @click.pass_context
 @get_cli_common_options
+@click.option('--strict/--no-strict', default=True,
+              help='Validate in strict mode')
 @click.argument('topic-hierarchy')
-def validate(ctx, topic_hierarchy, logfile, verbosity):
+def validate(ctx, topic_hierarchy, logfile, verbosity, strict=True):
     """Validate topic hierarchy"""
 
     setup_logger(verbosity, logfile)
 
     th = TopicHierarchy()
 
-    if th.validate(topic_hierarchy):
+    if th.validate(topic_hierarchy, strict=strict):
         click.echo('Valid')
     else:
         click.echo('Invalid')
 
 
-topics.add_command(list_)
-topics.add_command(validate)
+topic.add_command(list_)
+topic.add_command(validate)
