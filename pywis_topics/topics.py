@@ -177,7 +177,7 @@ def validate_baseline(topic_hierarchy: str = None) -> bool:
         return False
 
     if not topic_hierarchy.isascii():
-        msg = 'Topic must be ASCII T50'
+        msg = 'Topic must be IRA T.50'
         LOGGER.warning(msg)
         return False
 
