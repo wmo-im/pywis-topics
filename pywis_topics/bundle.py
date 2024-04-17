@@ -43,13 +43,13 @@ def bundle():
     pass
 
 
-@click.command()
-@get_cli_common_options
-@click.pass_context
-def sync(ctx, logfile, verbosity):
-    "Sync configuration bundle"""
+def sync_bundle() -> None:
+    """
+    Sync bundle locally to ~/.pywis-topics
 
-    setup_logger(verbosity, logfile)
+    :returns: `None`
+    """
+
     LOGGER.debug('Caching topic hierarchy')
 
     if USERDIR.exists():
@@ -76,6 +76,16 @@ def sync(ctx, logfile, verbosity):
     iana_file = WIS2_TOPIC_HIERARCHY_DIR / 'tlds-alpha-by-domain.txt'
     with iana_file.open('wb') as fh:
         fh.write(urlopen_(f'{IANA_URL}').read())
+
+
+@click.command()
+@get_cli_common_options
+@click.pass_context
+def sync(ctx, logfile, verbosity):
+    "Sync configuration bundle"""
+
+    setup_logger(verbosity, logfile)
+    sync_bundle()
 
 
 bundle.add_command(sync)
