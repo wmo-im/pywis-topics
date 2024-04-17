@@ -44,6 +44,9 @@ First check pywis-topics was correctly installed
 
 ```bash
 pywis-topics --version
+
+# sync WTH bundle
+pywis-topics bundle sync
 ```
 
 ### Listing and validation
