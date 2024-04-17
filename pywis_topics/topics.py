@@ -147,7 +147,6 @@ class TopicHierarchy:
         th_tokens = topic_hierarchy.split('/')
 
         for count, value in enumerate(th_tokens):
-            print("VALUE", value)
             if value in [None, '']:
                 continue
             if not strict and count == 3:
