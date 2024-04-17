@@ -150,6 +150,9 @@ class TopicHierarchy:
             if not strict and count == 3:
                 LOGGER.debug('Skipping centre-id validation')
                 continue
+            elif not strict and value in ['+', '#']:
+                LOGGER.debug('Skipping wildcard')
+                continue
             if value not in self.topics[count]:
                 return False
 
