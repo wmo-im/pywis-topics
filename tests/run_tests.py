@@ -104,17 +104,14 @@ class WIS2TopicHierarchyTest(unittest.TestCase):
 
         value = 'cache/a/+'
         self.assertTrue(self.th.validate(value, strict=False))
-
         self.assertFalse(self.th.validate(value))
 
         value = 'cache/a/#'
         self.assertTrue(self.th.validate(value, strict=False))
-
         self.assertFalse(self.th.validate(value))
 
         value = 'cache/a/wis2/+/data/core/#'
         self.assertTrue(self.th.validate(value, strict=False))
-
         self.assertFalse(self.th.validate(value))
 
     def test_list_children(self):
