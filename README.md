@@ -60,6 +60,9 @@ pywis-topics topic validate --no-strict origin/a/wis2/fake-centre-id/data/core
 
 # list children of a given WIS2 topic hierarchy level
 pywis-topics topic list wis2/a
+
+# validate a WIS2 topic hierarchy with wildcards (needs no-strict mode)
+pywis-topics topic validate origin/a/wis2/+/data/core --no-strict
 ```
 
 ### Centre identification validation
@@ -83,6 +86,8 @@ th.validate('origin/a/wis2/ca-eccc-msc/data/core')
 th.list_children('origin/a/wis2')
 
 th.validate('origin/a/wis2/fake-centre-id/data/core', strict=False)
+
+th.validate('origin/a/wis2/+/data/#', strict=False)
 
 cid = CentreId('ca-centre123')
 cid.validate()
