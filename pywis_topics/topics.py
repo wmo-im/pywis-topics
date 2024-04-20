@@ -22,6 +22,7 @@
 import csv
 import logging
 from pathlib import Path
+import re
 from typing import List
 
 import click
@@ -144,9 +145,40 @@ class TopicHierarchy:
 
         validate_baseline(topic_hierarchy)
 
-        th_tokens = topic_hierarchy.split('/')
+        all_tokens = topic_hierarchy.split('/')
+        core_tokens = all_tokens[:6]
+        esd_subtopic = '/'.join(all_tokens[6:])
 
-        for count, value in enumerate(th_tokens):
+        LOGGER.debug(f'Core tokens: {core_tokens}')
+        LOGGER.debug(f'Earth system discipline subtopic: {esd_subtopic}')
+        LOGGER.debug('Validating core tokens')
+
+        if not self._validate_core(core_tokens, strict):
+            LOGGER.debug('Core tokens are invalid')
+            return False
+
+        if esd_subtopic:
+            LOGGER.debug('Validating Earth system discipline subtopic')
+            if not self._validate_esd_subtopic(esd_subtopic, strict):
+                LOGGER.debug('Earth system discipline subtopic is invalid')
+                return False
+        else:
+            LOGGER.debug('No Earth system discipline subtopic')
+
+        return True
+
+    def _validate_core(self, core_tokens: list, strict: bool = True) -> bool:
+        """
+        Validates core topic tokens
+
+        :param core_tokens: `list` of core tokens
+        :param strict: `bool` of whether to perform strict validation,
+                       including centre-id
+
+        :returns: `bool` of whether topic hierarchy is valid
+        """
+
+        for count, value in enumerate(core_tokens):
             if value in [None, '']:
                 continue
             if not strict and count == 3:
@@ -158,10 +190,66 @@ class TopicHierarchy:
                     continue
                 else:
                     return False
+
             if value not in self.topics[count]:
                 return False
 
         return True
+
+    def _validate_esd_subtopic(self, esd_subtopic: str,
+                               strict: bool = True) -> bool:
+        """
+        Validates Earth system discipline subtopic
+
+        :param esd_subtopic: `str` of Earth system discipline subtopic
+        :param strict: `bool` of whether to perform strict validation
+
+        :returns: `bool` of whether topic hierarchy is valid
+        """
+
+        is_valid = False
+
+        if strict:
+            LOGGER.debug('Validating subtopic with strict mode')
+            return esd_subtopic in self.topics[-1]
+
+        tokens = esd_subtopic.split('/')
+        if len(tokens) > 1 and tokens[1] == 'experimental':
+            LOGGER.debug('Experimental topic found, skipping')
+            return True
+
+        regex = esd_subtopic
+        if '+' in regex:
+            regex = regex.replace('+', r'(\w+|\+)')
+        if '#' in regex:
+            regex = regex.replace('#', r'.*')
+
+        regex = f'^{regex}$'
+
+        LOGGER.debug(regex)
+
+        for esd in self.topics[-1]:
+            LOGGER.debug(f'Testing {esd} against {regex}')
+            match = re.search(regex, esd)
+            if not match:
+                LOGGER.debug('No match')
+            else:
+                LOGGER.debug('Match')
+                last_token_match = False
+                if not esd.endswith('#'):
+                    esd_last_token = esd.split('/')[-1]
+                    regex_last_token = (regex.split('/')[-1].replace('$', '')
+                                        .replace('.*', '')
+                                        .replace('^', ''))
+                    if regex_last_token == '':
+                        last_token_match = True
+                    elif esd_last_token == regex_last_token:
+                        last_token_match = True
+
+                if last_token_match:
+                    is_valid = True
+
+        return is_valid
 
 
 def validate_baseline(topic_hierarchy: str = None) -> bool:
@@ -188,6 +276,12 @@ def validate_baseline(topic_hierarchy: str = None) -> bool:
         msg = 'Topic must be IRA T.50'
         LOGGER.warning(msg)
         return False
+
+    if '#' in topic_hierarchy:
+        pos = topic_hierarchy.find('#')
+        if pos != len(topic_hierarchy) - 1:
+            LOGGER.warning('Multi-level wildcard can only be last')
+            return False
 
     return True
 
