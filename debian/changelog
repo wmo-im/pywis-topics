@@ -1,3 +1,9 @@
+pywis-topics (0.3.2) focal; urgency=medium
+
+  * fix topic validation
+
+ -- Tom Kralidis <tomkralidis@gmail.com>  Mon, 22 Apr 2024 14:39:22 +0000
+
 pywis-topics (0.2.0) focal; urgency=medium
 
   * make tables directory configurable
