@@ -211,7 +211,8 @@ class TopicHierarchy:
 
         if strict:
             LOGGER.debug('Validating subtopic with strict mode')
-            return esd_subtopic in self.topics[-1]
+            is_experimental = esd_subtopic.split('/')[1] == 'experimental'
+            return esd_subtopic in self.topics[-1] or is_experimental
 
         tokens = esd_subtopic.split('/')
         if len(tokens) > 1 and tokens[1] == 'experimental':

@@ -134,6 +134,9 @@ class WIS2TopicHierarchyTest(unittest.TestCase):
         value = 'cache/a/wis2/ca-eccc-msc/data/core/weather/surface-based-observations/'  # noqa
         self.assertFalse(self.th.validate(value))
 
+        value = 'cache/a/wis2/ca-eccc-msc/data/core/weather/experimental/surface-based-observations'  # noqa
+        self.assertTrue(self.th.validate(value))
+
         value = 'cache/a/wis2/ca-eccc-msc/data/core/weather/surface-based-observations/#'  # noqa
         self.assertTrue(self.th.validate(value, strict=False))
         self.assertFalse(self.th.validate(value))
