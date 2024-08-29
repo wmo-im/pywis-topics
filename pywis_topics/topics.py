@@ -191,7 +191,10 @@ class TopicHierarchy:
                 else:
                     return False
 
-            if value not in self.topics[count]:
+            if count == 3 and value.endswith('-test'):
+                LOGGER.debug('Skipping test centre-id')
+                continue
+            elif value not in self.topics[count]:
                 return False
 
         return True
@@ -212,7 +215,7 @@ class TopicHierarchy:
         if strict:
             LOGGER.debug('Validating subtopic with strict mode')
             is_experimental = '/experimental' in esd_subtopic
-            return esd_subtopic in self.topics[-1] or is_experimental
+            return any([esd_subtopic in self.topics[-1] or is_experimental])
 
         tokens = esd_subtopic.split('/')
         if len(tokens) > 1 and tokens[1] == 'experimental':
