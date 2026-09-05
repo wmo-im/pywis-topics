@@ -150,6 +150,10 @@ class WIS2TopicHierarchyTest(unittest.TestCase):
         self.assertTrue(self.th.validate(value, strict=False))
         self.assertFalse(self.th.validate(value))
 
+        value = 'origin/a/wis2/int-eumetsat-dcs/data/core/atmo-composition/experimental/surface-based-observations'  # noqa
+        self.assertFalse(self.th.validate(value, strict=False))
+        self.assertFalse(self.th.validate(value))
+
     def test_validate_publication(self):
         value = None
         with self.assertRaises(ValueError):
@@ -172,6 +176,7 @@ class WIS2TopicHierarchyTest(unittest.TestCase):
             'cache/a/wis2/ca-eccc-msc/data/core',
             'cache/a/wis2/ca-eccc-msc/data/core/weather/surface-based-observations1',  # noqa
             'origin/a/wis2/sa-ncm/metadata/core/weather/surface-based-observations/temp'  # noqa
+            'origin/a/wis2/int-eumetsat-dcs/data/core/atmo-composition/experimental/surface-based-observations'  # noqa
         ]
 
         for valid_topic in valid_topics:

@@ -45,6 +45,7 @@ class TopicHierarchy:
         :returns: `pywis_topics.topics_TopicHierarchy`
         """
 
+        self.earth_system_disciplines = []
         self.topics = []
 
         topic_levels = [
@@ -70,6 +71,8 @@ class TopicHierarchy:
                 next(reader)
                 for row in reader:
                     level_topics.append(row[0])
+                    if topic_level == 'earth-system-discipline':
+                        self.earth_system_disciplines.append(row[0])
 
                 self.topics.append(level_topics)
 
@@ -239,12 +242,16 @@ class TopicHierarchy:
 
         is_valid = False
 
+        tokens = esd_subtopic.split('/')
+        if tokens[0] not in ['+', '#'] + self.earth_system_disciplines:
+            LOGGER.debug(f'Invalid Earth system discipline: {tokens[0]}')
+            return False
+
         if strict:
             LOGGER.debug('Validating subtopic with strict mode')
             is_experimental = '/experimental' in esd_subtopic
             return any([esd_subtopic in self.topics[-1] or is_experimental])
 
-        tokens = esd_subtopic.split('/')
         if len(tokens) > 1 and tokens[1] == 'experimental':
             LOGGER.debug('Experimental topic found, skipping')
             return True
