@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pywis-topics"
-version = "0.5.1"
+version = "0.6.dev1"
 description = "pywis-topics is a utility to work with the WIS2 Topic Hierarchy"
 readme = "README.md"
 requires-python = ">=3.12"
